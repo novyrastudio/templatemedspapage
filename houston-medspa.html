@@ -1,0 +1,2674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Houston MedSpa — Premium Aesthetic Medicine Template</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,600&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+<style>
+/* ─── SVG NOISE FILTER ─── */
+.noise-filter { position: fixed; width: 0; height: 0; }
+
+:root {
+  --moss:    #264E66;
+  --clay:    #4D9FC3;
+  --clay-lt: #78BDD7;
+  --cream:   #F6FAFC;
+  --cream-2: #EAF4F8;
+  --charcoal:#142433;
+  --charcoal-2: #1D3444;
+  --muted:   #637786;
+  --muted-lt:#9AAAB4;
+  --white:   #FFFFFF;
+  --border:  rgba(38,78,102,0.13);
+  --shadow-soft: 0 16px 48px rgba(20,36,51,0.08);
+  --shadow-card: 0 18px 44px rgba(20,36,51,0.1);
+
+  --font-body:    'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-mono:    'IBM Plex Mono', monospace;
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--charcoal);
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.65;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Noise overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.018;
+}
+
+/* ─── UTILITIES ─── */
+.serif { font-family: var(--font-display); }
+.mono  { font-family: var(--font-mono); }
+.clay  { color: var(--clay); }
+
+/* ─── NAVBAR ─── */
+#navbar {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 0.6rem 0.6rem 0.6rem 1.6rem;
+  border-radius: var(--radius-xl);
+  background: rgba(255,255,255,0.82);
+  border: 1px solid rgba(38,78,102,0.11);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  transition: background 0.4s, box-shadow 0.4s;
+  min-width: min(760px, 92vw);
+  box-shadow: 0 10px 34px rgba(20,36,51,0.07);
+}
+#navbar.scrolled {
+  background: rgba(255,255,255,0.96);
+  box-shadow: 0 12px 38px rgba(20,36,51,0.11);
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--charcoal);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.nav-logo em { color: var(--clay); font-style: italic; }
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+.nav-links a {
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--charcoal); }
+.nav-cta {
+  background: linear-gradient(135deg, var(--moss), var(--clay));
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: var(--radius-xl);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.25s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(77,159,195,0.24); }
+.nav-cta svg { width: 14px; height: 14px; }
+
+/* ─── HERO ─── */
+#hero {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 0 3rem;
+  position: relative;
+  align-items: center;
+  gap: 3rem;
+  padding-top: 5rem;
+  max-width: 1360px;
+  margin: 0 auto;
+}
+#hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(115deg, rgba(255,255,255,0.78) 0%, rgba(246,250,252,0.32) 38%, rgba(234,244,248,0.5) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  z-index: 2;
+}
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid var(--border);
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-xl);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--moss);
+  width: fit-content;
+  opacity: 0;
+  box-shadow: 0 8px 30px rgba(20,36,51,0.06);
+}
+.hero-pill-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--clay);
+  animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.8); }
+}
+.hero-headline {
+  font-size: clamp(3rem, 5.5vw, 5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: 0;
+  color: var(--charcoal);
+  opacity: 0;
+}
+.hero-headline em {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--moss);
+  font-size: 1.15em;
+  letter-spacing: 0;
+}
+.hero-sub {
+  font-size: 1.02rem;
+  color: var(--muted);
+  max-width: 440px;
+  line-height: 1.8;
+  opacity: 0;
+}
+.hero-ctas {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  opacity: 0;
+  flex-wrap: wrap;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--moss), var(--clay));
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: var(--radius-xl);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(77,159,195,0.18);
+  transition: transform 0.2s cubic-bezier(0.25,0.46,0.45,0.94), box-shadow 0.25s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 16px 34px rgba(77,159,195,0.26); }
+.btn-secondary {
+  background: rgba(255,255,255,0.9);
+  color: var(--charcoal);
+  border: 1.5px solid var(--border);
+  padding: 1rem 2rem;
+  border-radius: var(--radius-xl);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.btn-secondary:hover { border-color: var(--clay); transform: translateY(-1px); }
+.hero-stats {
+  display: flex;
+  gap: 2rem;
+  opacity: 0;
+  padding-top: 0.5rem;
+}
+.hero-stat { display: flex; flex-direction: column; }
+.hero-stat-val {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 400;
+  color: var(--charcoal);
+  line-height: 1;
+}
+.hero-stat-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-weight: 500;
+  margin-top: 0.2rem;
+}
+.stat-divider {
+  width: 1px;
+  background: var(--border);
+  align-self: stretch;
+}
+
+/* Hero Right — image collage */
+.hero-right {
+  position: relative;
+  height: 680px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+.hero-carousel {
+  width: min(520px, 100%);
+  height: min(620px, 78vh);
+  min-height: 480px;
+  border-radius: 1.25rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  box-shadow: 0 28px 80px rgba(20,36,51,0.16);
+  opacity: 0;
+  background: var(--cream-2);
+}
+.hero-carousel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(246,250,252,0) 50%, rgba(20,36,51,0.28) 100%);
+  pointer-events: none;
+}
+.hero-carousel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0) 30%),
+    linear-gradient(300deg, rgba(120,189,215,0.18) 0%, rgba(120,189,215,0) 42%);
+  z-index: 2;
+  pointer-events: none;
+}
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  animation: heroCarousel 30s infinite;
+  will-change: opacity;
+}
+.hero-slide:nth-child(2) { animation-delay: 5s; }
+.hero-slide:nth-child(3) { animation-delay: 10s; }
+.hero-slide:nth-child(4) { animation-delay: 15s; }
+.hero-slide:nth-child(5) { animation-delay: 20s; }
+.hero-slide:nth-child(6) { animation-delay: 25s; }
+.hero-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.02);
+  animation: heroKenBurns 30s ease-in-out infinite;
+}
+@keyframes heroCarousel {
+  0%, 13% { opacity: 1; }
+  17%, 96% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes heroKenBurns {
+  0% { transform: scale(1.02) translate3d(0, 0, 0); }
+  50% { transform: scale(1.08) translate3d(-1.5%, -1%, 0); }
+  100% { transform: scale(1.03) translate3d(1%, 0.5%, 0); }
+}
+.hero-floating-card {
+  position: absolute;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.9rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: var(--shadow-soft);
+  opacity: 0;
+  z-index: 3;
+}
+.hero-floating-card.card-rating {
+  bottom: 6rem;
+  right: 0;
+  white-space: nowrap;
+}
+.hero-floating-card.card-badge {
+  top: 4.5rem;
+  left: 0;
+}
+.hfc-icon {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.hfc-icon.green { background: rgba(38,78,102,0.12); }
+.hfc-icon.clay  { background: rgba(77,159,195,0.14); }
+.hfc-icon svg   { width: 20px; height: 20px; }
+.hfc-label { font-size: 0.68rem; color: var(--muted); font-weight: 500; }
+.hfc-value { font-size: 0.88rem; font-weight: 700; color: var(--charcoal); }
+.hfc-stars { color: #F5A623; font-size: 0.75rem; letter-spacing: 0.05em; }
+
+/* ─── TRUST BAR ─── */
+#trust {
+  background: linear-gradient(90deg, #EAF4F8, #F9FCFD);
+  padding: 2.5rem 3rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+#trust::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(77,159,195,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.trust-item {
+  text-align: center;
+  padding: 1rem;
+  border-right: 1px solid rgba(38,78,102,0.1);
+}
+.trust-item:last-child { border-right: none; }
+.trust-val {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  font-weight: 400;
+  color: var(--charcoal);
+  display: block;
+  line-height: 1;
+}
+.trust-lbl {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  margin-top: 0.3rem;
+  text-transform: uppercase;
+}
+.trust-stars { color: #F5C542; font-size: 0.9rem; display: block; margin-bottom: 0.2rem; }
+
+/* ─── SECTION BASICS ─── */
+section { position: relative; }
+.section-pad { padding: 6rem 3rem; }
+.section-pad > * {
+  max-width: 1180px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--clay);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.eyebrow::before {
+  content: '';
+  width: 20px; height: 2px;
+  background: var(--clay);
+  border-radius: 2px;
+}
+.section-title {
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.1;
+  color: var(--charcoal);
+}
+.section-title em {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--moss);
+  font-size: 1.1em;
+}
+.section-sub {
+  font-size: 0.95rem;
+  color: var(--muted);
+  max-width: 480px;
+  line-height: 1.8;
+  margin-top: 0.75rem;
+}
+
+/* ─── TREATMENTS / FEATURES ─── */
+#treatments { background: var(--white); }
+.treatments-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 3.5rem;
+  gap: 2rem;
+}
+.treatments-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+.treatment-card {
+  --tc-before: var(--tc-img);
+  background: linear-gradient(180deg, var(--white), var(--cream));
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 2rem 1.75rem;
+  cursor: pointer;
+  transition: border-color 0.25s, transform 0.25s cubic-bezier(0.25,0.46,0.45,0.94), box-shadow 0.25s;
+  position: relative;
+  overflow: hidden;
+  min-height: 260px;
+  isolation: isolate;
+}
+.treatment-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--moss), var(--clay-lt));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+  z-index: 2;
+}
+.treatment-card::after {
+  content: '';
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 46%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-md);
+  background-image:
+    linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.58)),
+    var(--tc-before),
+    var(--tc-img);
+  background-size: 100% 100%, 50% 100%, 50% 100%;
+  background-position: center, left center, right center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: -1;
+}
+.treatment-card:hover {
+  border-color: rgba(77,159,195,0.34);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card);
+}
+.treatment-card:hover::before { transform: scaleX(1); }
+.treatment-card:hover::after { opacity: 0.26; transform: translateY(0) scale(1); }
+.tc-icon {
+  width: 44px; height: 44px;
+  border-radius: var(--radius-sm);
+  background: rgba(38,78,102,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  transition: background 0.25s;
+}
+.treatment-card:hover .tc-icon { background: rgba(77,159,195,0.12); }
+.tc-icon svg { width: 22px; height: 22px; stroke: var(--moss); }
+.treatment-card:hover .tc-icon svg { stroke: var(--clay); }
+.tc-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--charcoal);
+  margin-bottom: 0.5rem;
+}
+.tc-desc {
+  font-size: 0.83rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+.tc-link {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--clay);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: gap 0.2s;
+}
+.treatment-card:hover .tc-link { gap: 0.6rem; }
+
+/* ─── INTERACTIVE FEATURES SECTION ─── */
+#features {
+  background: var(--cream-2);
+  padding: 6rem 3rem;
+}
+.features-header { margin-bottom: 3.5rem; }
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.feature-card {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  overflow: hidden;
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 16px 42px rgba(20,36,51,0.05);
+}
+.fc-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.fc-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--charcoal);
+  margin-bottom: 0.5rem;
+}
+.fc-desc {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 1.5rem;
+}
+.fc-content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+
+/* Card 1 — Diagnostic Shuffler */
+.shuffler-stack {
+  position: relative;
+  height: 140px;
+  margin-top: 0.5rem;
+}
+.shuffler-card {
+  position: absolute;
+  width: 100%;
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+.shuffler-card:nth-child(1) { top: 0px; z-index: 3; }
+.shuffler-card:nth-child(2) { top: 10px; z-index: 2; opacity: 0.7; }
+.shuffler-card:nth-child(3) { top: 20px; z-index: 1; opacity: 0.4; }
+.sc-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--clay);
+  flex-shrink: 0;
+}
+.sc-text { font-size: 0.82rem; font-weight: 600; color: var(--charcoal); }
+.sc-sub { font-size: 0.7rem; color: var(--muted); margin-top: 0.1rem; }
+
+/* Card 2 — Telemetry */
+.telemetry-wrap {
+  background: #153244;
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.tele-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+.tele-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #4ADE80;
+  animation: pulse-dot 1.5s infinite;
+}
+.tele-live {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: #4ADE80;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.tele-line {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.4;
+}
+.tele-line.active {
+  color: white;
+}
+.tele-cursor {
+  display: inline-block;
+  width: 7px; height: 13px;
+  background: var(--clay);
+  border-radius: 1px;
+  vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Card 3 — Scheduler */
+.scheduler-wrap { display: flex; flex-direction: column; gap: 0.75rem; }
+.sched-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+.sched-day-label {
+  text-align: center;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  padding-bottom: 0.25rem;
+}
+.sched-day {
+  aspect-ratio: 1;
+  border-radius: 0.5rem;
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.1s;
+  cursor: pointer;
+}
+.sched-day.active {
+  background: var(--moss);
+  border-color: var(--moss);
+  color: white;
+}
+.sched-day.hover-state {
+  border-color: var(--clay);
+  color: var(--clay);
+}
+.sched-day.press-state { transform: scale(0.93); }
+.sched-save {
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--charcoal);
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.sched-save.highlighted {
+  background: var(--clay);
+  border-color: var(--clay);
+  color: white;
+}
+
+/* ─── PHILOSOPHY ─── */
+#philosophy {
+  background: var(--charcoal);
+  padding: 8rem 3rem;
+  overflow: hidden;
+  position: relative;
+}
+#philosophy::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1611086485845-c0a8a3d1028e?w=1600&q=60&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.06;
+}
+.philosophy-inner {
+  max-width: 800px;
+  position: relative;
+  z-index: 2;
+}
+.philo-contrast {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.philo-line-sm {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: rgba(255,255,255,0.4);
+  font-weight: 300;
+  line-height: 1.6;
+}
+.philo-line-lg {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-style: italic;
+  font-weight: 300;
+  color: white;
+  line-height: 1.05;
+}
+.philo-line-lg span { color: var(--clay); }
+
+/* ─── PROTOCOL — STICKY STACKING ─── */
+#protocol {
+  background: var(--cream);
+  padding: 6rem 3rem;
+}
+.protocol-header { text-align: center; margin-bottom: 4rem; }
+.protocol-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.protocol-step {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 2.5rem;
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  align-items: center;
+  gap: 2rem;
+  transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
+}
+.protocol-step:hover {
+  border-color: rgba(77,159,195,0.3);
+  box-shadow: var(--shadow-card);
+  transform: translateY(-2px);
+}
+.step-num {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  font-weight: 400;
+  text-align: center;
+}
+.step-num-big {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: rgba(38,78,102,0.16);
+  display: block;
+  line-height: 1;
+}
+.step-body { }
+.step-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--charcoal);
+  margin-bottom: 0.35rem;
+}
+.step-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+.step-visual {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-sm);
+  background: rgba(77,159,195,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.step-visual svg { width: 36px; height: 36px; stroke: var(--moss); }
+
+/* ─── BEFORE & AFTER ─── */
+#beforeafter { background: var(--white); }
+.ba-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+.ba-tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+.ba-tab {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 0.5rem 1.1rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.ba-tab.active {
+  background: var(--moss);
+  color: white;
+  border-color: var(--moss);
+}
+.ba-result-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+.ba-result-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+  padding: 0.85rem 1rem;
+  background: var(--cream);
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+}
+.ba-result-list li::before {
+  content: '';
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--clay);
+  flex-shrink: 0;
+}
+.ba-result-list strong { color: var(--charcoal); font-weight: 600; }
+
+.ba-slider-wrap {
+  position: relative;
+  aspect-ratio: 980 / 1756;
+  max-width: min(460px, 100%);
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  cursor: ew-resize;
+  user-select: none;
+  touch-action: pan-y;
+  box-shadow: 0 24px 64px rgba(20,36,51,0.14);
+  background: var(--cream-2);
+}
+.ba-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ba-img.after {
+  clip-path: inset(0 50% 0 0);
+}
+.ba-slider-wrap.is-easing .ba-img.after,
+.ba-slider-wrap.is-easing .ba-divider,
+.ba-slider-wrap.is-easing .ba-handle {
+  transition: clip-path 0.28s ease-out, left 0.28s ease-out;
+}
+.ba-divider {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: white;
+  z-index: 3;
+  pointer-events: none;
+}
+.ba-handle {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(26,26,26,0.2);
+}
+.ba-handle svg { width: 18px; height: 18px; stroke: var(--charcoal); fill: none; }
+.ba-label-pill {
+  position: absolute;
+  top: 1rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.8rem;
+  border-radius: var(--radius-xl);
+  z-index: 3;
+}
+.ba-before-pill { left: 1rem; background: rgba(26,26,26,0.6); color: white; }
+.ba-after-pill  { right: 1rem; background: var(--clay); color: white; }
+
+/* ─── TESTIMONIALS ─── */
+#testimonials { background: var(--cream-2); }
+.testi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+.testi-card {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  transition: box-shadow 0.25s, transform 0.25s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.testi-card:hover {
+  box-shadow: var(--shadow-card);
+  transform: translateY(-3px);
+}
+.testi-stars { color: #F5A623; font-size: 0.85rem; letter-spacing: 0.08em; margin-bottom: 1.1rem; display: block; }
+.testi-text {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--charcoal);
+  line-height: 1.75;
+  margin-bottom: 1.5rem;
+}
+.testi-author { display: flex; align-items: center; gap: 0.75rem; }
+.testi-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(77,159,195,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--moss);
+  flex-shrink: 0;
+}
+.testi-name { font-size: 0.85rem; font-weight: 600; color: var(--charcoal); }
+.testi-treatment { font-size: 0.72rem; color: var(--clay); font-weight: 500; }
+
+/* ─── FAQ ─── */
+#faq { background: var(--white); }
+.faq-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 5rem; align-items: start; }
+.faq-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.faq-item {
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+.faq-item:hover { border-color: rgba(77,159,195,0.32); }
+.faq-item.open { border-color: var(--moss); }
+.faq-q {
+  padding: 1.3rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--charcoal);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.faq-toggle {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--cream-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+  color: var(--clay);
+  transition: transform 0.3s, background 0.3s;
+}
+.faq-item.open .faq-toggle { transform: rotate(45deg); background: var(--clay); color: white; }
+.faq-a {
+  padding: 0 1.5rem 1.3rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.85;
+  display: none;
+}
+.faq-item.open .faq-a { display: block; }
+
+/* ─── CTA BAND ─── */
+.cta-band {
+  background: linear-gradient(135deg, #153244 0%, var(--moss) 58%, #3C8DB0 100%);
+  padding: 6rem 3rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 100%, rgba(255,255,255,0.16) 0%, transparent 62%);
+  pointer-events: none;
+}
+.cta-title {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  position: relative;
+}
+.cta-title em {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  color: rgba(255,255,255,0.7);
+}
+.cta-sub {
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.6);
+  max-width: 480px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.8;
+  position: relative;
+}
+.btn-white {
+  background: white;
+  color: var(--charcoal);
+  border: none;
+  padding: 1rem 2.25rem;
+  border-radius: var(--radius-xl);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.btn-white:hover { background: var(--cream); transform: scale(1.03); }
+
+/* ─── FOOTER ─── */
+footer {
+  background: linear-gradient(180deg, #F9FCFD 0%, #EAF4F8 100%);
+  padding: 5rem 3rem 2.5rem;
+  border-top: 1px solid var(--border);
+  border-radius: 1.5rem 1.5rem 0 0;
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 1fr 1.25fr;
+  gap: 3rem;
+  margin-bottom: 3.5rem;
+  max-width: 1180px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.footer-brand {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--charcoal);
+  margin-bottom: 0.75rem;
+}
+.footer-brand em { color: var(--clay); font-style: italic; }
+.footer-desc { font-size: 0.83rem; color: var(--muted); line-height: 1.8; max-width: 300px; }
+.footer-col-title { font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--moss); margin-bottom: 1.25rem; font-weight: 700; }
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.footer-links a { text-decoration: none; font-size: 0.85rem; color: var(--muted); transition: color 0.2s; }
+.footer-links a:hover { color: var(--moss); }
+.footer-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+.footer-social a {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  color: var(--moss);
+  background: rgba(255,255,255,0.74);
+  padding: 0.55rem 0.85rem;
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+  transition: border-color 0.2s, transform 0.2s, background 0.2s;
+}
+.footer-social a:hover { border-color: rgba(77,159,195,0.45); background: white; transform: translateY(-1px); }
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 1.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.footer-copy { font-size: 0.75rem; color: var(--muted); }
+.footer-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+.status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #22C55E;
+  animation: pulse-dot 2s infinite;
+}
+
+/* ─── STICKY BAR ─── */
+#sticky-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 90;
+  background: rgba(242,240,233,0.97);
+  border-top: 1.5px solid var(--border);
+  backdrop-filter: blur(16px);
+  padding: 1rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  box-shadow: 0 -8px 32px rgba(26,26,26,0.08);
+}
+#sticky-bar.visible { transform: translateY(0); }
+.sticky-text { font-size: 0.85rem; color: var(--muted); }
+.sticky-text strong { color: var(--charcoal); font-weight: 700; }
+
+/* ─── WHATSAPP ─── */
+#wa-btn {
+  position: fixed;
+  bottom: 5.5rem;
+  right: 1.75rem;
+  z-index: 95;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: #25D366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.35);
+  transition: transform 0.25s, box-shadow 0.25s;
+  border: none;
+  text-decoration: none;
+}
+#wa-btn:hover { transform: scale(1.1); box-shadow: 0 8px 30px rgba(37,211,102,0.5); }
+#wa-btn svg { width: 26px; height: 26px; fill: white; }
+
+/* ─── MODAL ─── */
+#modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(26,26,26,0.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  padding: 1rem;
+}
+#modal-overlay.open { opacity: 1; pointer-events: all; }
+#modal {
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 640px;
+  max-height: 92vh;
+  overflow-y: auto;
+  position: relative;
+  padding: 0;
+  transform: scale(0.94) translateY(20px);
+  transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+  box-shadow: 0 32px 80px rgba(26,26,26,0.2);
+}
+#modal-overlay.open #modal { transform: scale(1) translateY(0); }
+
+/* Modal multi-step */
+.modal-steps-bar {
+  display: flex;
+  padding: 1.5rem 2.5rem 0;
+  gap: 0.5rem;
+}
+.modal-step-ind {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border);
+  transition: background 0.3s;
+}
+.modal-step-ind.active { background: var(--clay); }
+.modal-step-label {
+  padding: 0.75rem 2.5rem 0;
+  display: flex;
+  gap: 1.5rem;
+}
+.msl-item {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-lt);
+  transition: color 0.3s;
+}
+.msl-item.active { color: var(--clay); }
+
+.modal-body { padding: 2rem 2.5rem 2.5rem; }
+.modal-close {
+  position: absolute;
+  top: 1.25rem; right: 1.5rem;
+  background: white;
+  border: 1.5px solid var(--border);
+  color: var(--muted);
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, border-color 0.2s;
+  line-height: 1;
+  z-index: 10;
+}
+.modal-close:hover { color: var(--charcoal); border-color: var(--charcoal); }
+
+.modal-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--charcoal);
+  margin-bottom: 0.35rem;
+}
+.modal-title em {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--clay);
+}
+.modal-sub { font-size: 0.83rem; color: var(--muted); margin-bottom: 2rem; }
+
+/* Service selection step */
+.service-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+.service-option {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+.service-option:hover { border-color: var(--moss); }
+.service-option.selected { border-color: var(--clay); background: rgba(77,159,195,0.06); }
+.service-icon {
+  width: 40px; height: 40px;
+  border-radius: 0.75rem;
+  background: rgba(38,78,102,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.1rem;
+}
+.service-option.selected .service-icon { background: rgba(77,159,195,0.12); }
+.service-name { font-size: 0.85rem; font-weight: 600; color: var(--charcoal); }
+.service-sub { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
+
+/* Form fields */
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.form-group.full { grid-column: 1/-1; }
+.form-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--charcoal);
+  padding: 0.8rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 400;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--moss);
+  box-shadow: 0 0 0 3px rgba(77,159,195,0.12);
+}
+.form-select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238A8678'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+}
+.form-select option { background: white; }
+.phone-field {
+  display: grid;
+  grid-template-columns: minmax(126px, 0.42fr) 1fr;
+  gap: 0.65rem;
+}
+.phone-country { min-width: 0; }
+.form-input.is-invalid {
+  border-color: #D64545;
+  box-shadow: 0 0 0 3px rgba(214,69,69,0.1);
+}
+.form-error {
+  min-height: 1rem;
+  color: #B42318;
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-submit {
+  width: 100%;
+  background: var(--clay);
+  color: white;
+  border: none;
+  border-radius: var(--radius-xl);
+  padding: 1.1rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: background 0.2s, transform 0.2s;
+}
+.form-submit:hover { background: var(--clay-lt); transform: scale(1.02); }
+.form-note { font-size: 0.7rem; color: var(--muted-lt); text-align: center; margin-top: 0.75rem; }
+
+.btn-modal-next {
+  background: var(--moss);
+  color: white;
+  border: none;
+  border-radius: var(--radius-xl);
+  padding: 0.9rem 2rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: background 0.2s, transform 0.2s;
+}
+.btn-modal-next:hover { background: #3a5045; transform: scale(1.02); }
+
+/* Success */
+#form-success { text-align: center; padding: 3rem 2rem; display: none; }
+.success-icon { font-size: 2.5rem; margin-bottom: 1.25rem; display: block; }
+#form-success h3 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--charcoal);
+  margin-bottom: 0.6rem;
+}
+#form-success h3 em { color: var(--clay); }
+#form-success p { font-size: 0.88rem; color: var(--muted); line-height: 1.8; }
+
+/* ─── REVEAL ANIMATIONS ─── */
+.reveal { opacity: 0; transform: translateY(28px); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1024px) {
+  #navbar { min-width: 92vw; padding: 0.6rem 0.6rem 0.6rem 1.5rem; gap: 1rem; }
+  .nav-links { display: none; }
+  #hero { grid-template-columns: 1fr; padding: 7rem 2rem 4rem; gap: 2.5rem; min-height: auto; }
+  .hero-left { align-items: flex-start; }
+  .hero-right { height: clamp(420px, 56vw, 560px); width: 100%; }
+  .hero-carousel { width: min(560px, 100%); height: 100%; min-height: 0; }
+  .hero-floating-card.card-rating { right: max(0.5rem, calc(50% - 270px)); bottom: 1.2rem; }
+  .hero-floating-card.card-badge { display: none; }
+  .treatments-grid { grid-template-columns: 1fr 1fr; }
+  .features-grid { grid-template-columns: 1fr; }
+  .testi-grid { grid-template-columns: 1fr 1fr; }
+  .ba-layout { grid-template-columns: 1fr; }
+  .faq-layout { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  #trust { grid-template-columns: repeat(2, 1fr); }
+  .section-pad { padding: 5rem 2rem; }
+  #sticky-bar { padding: 1rem 2rem; }
+  .protocol-step { grid-template-columns: 60px 1fr; }
+  .step-visual { display: none; }
+}
+@media (max-width: 640px) {
+  #navbar { top: 0.75rem; min-width: calc(100vw - 1.5rem); padding: 0.55rem 0.55rem 0.55rem 1rem; }
+  .nav-logo { font-size: 1.02rem; }
+  .nav-cta { padding: 0.7rem 0.9rem; font-size: 0.72rem; }
+  .nav-cta svg { display: none; }
+  #hero { padding: 6rem 1rem 3rem; gap: 2rem; }
+  .hero-left { align-items: stretch; }
+  .hero-pill { font-size: 0.67rem; }
+  .hero-headline { font-size: clamp(2.4rem, 15vw, 3.2rem); }
+  .hero-sub { font-size: 0.95rem; max-width: none; }
+  .hero-ctas { align-items: stretch; }
+  .hero-ctas .btn-primary,
+  .hero-ctas .btn-secondary { width: 100%; justify-content: center; }
+  .hero-stats { gap: 0.85rem; justify-content: space-between; }
+  .hero-stat-val { font-size: 1.8rem; }
+  .hero-stat-label { font-size: 0.66rem; }
+  .hero-right { height: min(460px, 118vw); }
+  .hero-carousel { border-radius: var(--radius-lg); }
+  .hero-floating-card { padding: 0.75rem 0.85rem; }
+  .hero-floating-card.card-rating { left: 0.75rem; right: 0.75rem; bottom: 0.75rem; justify-content: flex-start; white-space: normal; }
+  #trust { grid-template-columns: 1fr 1fr; padding: 2rem 1rem; gap: 0; }
+  .trust-item { border-right: none; border-bottom: 1px solid rgba(38,78,102,0.1); }
+  .trust-item:nth-last-child(-n+2) { border-bottom: none; }
+  .treatments-header { flex-direction: column; align-items: stretch; margin-bottom: 2rem; }
+  .treatments-header .btn-primary { width: 100%; justify-content: center; }
+  .treatments-grid { grid-template-columns: 1fr; }
+  .treatment-card { min-height: 0; padding: 1.5rem; }
+  .treatment-card::after { display: none; }
+  .testi-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+  .form-row { grid-template-columns: 1fr; }
+  .phone-field { grid-template-columns: 1fr; }
+  .service-grid { grid-template-columns: 1fr; }
+  #modal-overlay { align-items: flex-end; padding: 0.5rem; }
+  #modal { border-radius: var(--radius-lg) var(--radius-lg) var(--radius-md) var(--radius-md); max-height: 94vh; }
+  .modal-steps-bar { padding: 1.25rem 1.5rem 0; }
+  .modal-step-label { padding: 0.7rem 1.5rem 0; gap: 0.9rem; }
+  .modal-body { padding: 1.5rem; }
+  .modal-title { font-size: 1.5rem; }
+  .ba-layout { gap: 2.5rem; }
+  .ba-tabs { overflow-x: auto; padding-bottom: 0.25rem; }
+  #sticky-bar { padding: 0.8rem 1rem; gap: 0.75rem; align-items: stretch; flex-direction: column; }
+  #sticky-bar .btn-primary { width: 100%; justify-content: center; }
+  .sticky-text { text-align: center; font-size: 0.78rem; }
+  #wa-btn { right: 1rem; bottom: 8.25rem; }
+  footer { padding: 4rem 1.25rem 2rem; }
+}
+@media (min-width: 1440px) {
+  .treatments-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  #hero { gap: 5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+  .hero-slide:first-child { opacity: 1; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAVBAR ─── -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">Houston <em>MedSpa</em></a>
+  <ul class="nav-links">
+    <li><a href="#treatments">Treatments</a></li>
+    <li><a href="#beforeafter">Results</a></li>
+    <li><a href="#testimonials">Testimonials</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <button class="nav-cta" onclick="openModal()">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2.5a5.5 5.5 0 100 11A5.5 5.5 0 008 2.5zM8 5v3l2 1"/></svg>
+    Book Consultation
+  </button>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-pill">
+      <span class="hero-pill-dot"></span>
+      Premium Aesthetic Medicine · Houston, TX
+    </div>
+    <h1 class="hero-headline">
+      Your skin<br>deserves the<br><em>finest care.</em>
+    </h1>
+    <p class="hero-sub">
+      Medical-grade non-surgical treatments, crafted around your unique anatomy. Private consultations with board-certified specialists.
+    </p>
+    <div class="hero-ctas">
+      <button class="btn-primary" onclick="openModal()">
+        Book Free Consultation
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
+      </button>
+      <button class="btn-secondary" onclick="document.getElementById('treatments').scrollIntoView({behavior:'smooth'})">View Treatments</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-val">98%</span>
+        <span class="hero-stat-label">Satisfaction rate</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-val">10k+</span>
+        <span class="hero-stat-label">Treatments done</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-val">12yr</span>
+        <span class="hero-stat-label">Of excellence</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-carousel" aria-label="MedSpa treatment gallery">
+      <div class="hero-slide">
+        <img
+          src="assets/botox-after.jpg"
+          alt="Luxury facial treatment at Houston MedSpa"
+          width="980"
+          height="1756"
+          fetchpriority="high"
+          decoding="async"
+        >
+      </div>
+      <div class="hero-slide">
+        <img
+          src="assets/fillers-after.jpg"
+          alt="Refined dermal filler result in a premium MedSpa setting"
+          width="980"
+          height="1756"
+          loading="lazy"
+          decoding="async"
+        >
+      </div>
+      <div class="hero-slide">
+        <img
+          src="assets/hydrafacial-after.jpg"
+          alt="HydraFacial skin glow result in a bright aesthetic clinic"
+          width="980"
+          height="1756"
+          loading="lazy"
+          decoding="async"
+        >
+      </div>
+      <div class="hero-slide">
+        <img
+          src="assets/laser-after.jpg"
+          alt="Laser skin rejuvenation result in a modern clinic"
+          width="980"
+          height="1756"
+          loading="lazy"
+          decoding="async"
+        >
+      </div>
+      <div class="hero-slide">
+        <img
+          src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=900&q=60&auto=format&fit=crop"
+          alt="Premium facial treatment in a luxury MedSpa suite"
+          width="900"
+          height="1350"
+          loading="lazy"
+          decoding="async"
+        >
+      </div>
+      <div class="hero-slide">
+        <img
+          src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=900&q=60&auto=format&fit=crop"
+          alt="Luxury skincare consultation and medical aesthetics"
+          width="900"
+          height="1350"
+          loading="lazy"
+          decoding="async"
+        >
+      </div>
+    </div>
+    <div class="hero-floating-card card-rating">
+      <div class="hfc-icon green">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#264E66" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <div>
+        <div class="hfc-label">Google Reviews</div>
+        <div class="hfc-stars">★★★★★</div>
+        <div class="hfc-value">4.9 · 840+ reviews</div>
+      </div>
+    </div>
+    <div class="hero-floating-card card-badge">
+      <div class="hfc-icon clay">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#4D9FC3" stroke-width="2"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+      </div>
+      <div>
+        <div class="hfc-label">Board Certified</div>
+        <div class="hfc-value">15+ Specialists</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TRUST BAR ─── -->
+<div id="trust">
+  <div class="trust-item reveal">
+    <span class="trust-stars">★★★★★</span>
+    <span class="trust-val">4.9</span>
+    <span class="trust-lbl">Google Rating</span>
+  </div>
+  <div class="trust-item reveal">
+    <span class="trust-val">10,000+</span>
+    <span class="trust-lbl">Treatments Performed</span>
+  </div>
+  <div class="trust-item reveal">
+    <span class="trust-val">15+</span>
+    <span class="trust-lbl">Licensed Specialists</span>
+  </div>
+  <div class="trust-item reveal">
+    <span class="trust-val">12yr</span>
+    <span class="trust-lbl">Years of Excellence</span>
+  </div>
+</div>
+
+<!-- ─── TREATMENTS ─── -->
+<section id="treatments" class="section-pad" style="background:var(--white);">
+  <div class="treatments-header reveal">
+    <div>
+      <p class="eyebrow">Our Services</p>
+      <h2 class="section-title">Advanced <em>aesthetic</em> procedures</h2>
+    </div>
+    <button class="btn-primary" onclick="openModal()" style="flex-shrink:0;">Book Consultation</button>
+  </div>
+  <div class="treatments-grid">
+    <div class="treatment-card reveal" style="--tc-before:url('assets/botox-before.jpg');--tc-img:url('assets/botox-after.jpg');">
+      <div class="tc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zM8 12h8M12 8v8" stroke="currentColor"/></svg>
+      </div>
+      <div class="tc-name">Botox & Dysport</div>
+      <div class="tc-desc">Precision neuromodulator injections to smooth dynamic wrinkles and restore a naturally rested appearance.</div>
+      <div class="tc-link" onclick="openModal()">Book this treatment →</div>
+    </div>
+    <div class="treatment-card reveal" style="--tc-before:url('assets/fillers-before.jpg');--tc-img:url('assets/fillers-after.jpg');">
+      <div class="tc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75"><circle cx="12" cy="12" r="9" stroke="currentColor"/><circle cx="12" cy="12" r="4" stroke="currentColor"/></svg>
+      </div>
+      <div class="tc-name">Dermal Fillers</div>
+      <div class="tc-desc">Hyaluronic acid fillers for lips, cheeks, jawline and under-eyes. Sculpted volume that feels entirely natural.</div>
+      <div class="tc-link" onclick="openModal()">Book this treatment →</div>
+    </div>
+    <div class="treatment-card reveal" style="--tc-before:url('assets/laser-before.jpg');--tc-img:url('assets/laser-after.jpg');">
+      <div class="tc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke="currentColor"/></svg>
+      </div>
+      <div class="tc-name">Laser Hair Removal</div>
+      <div class="tc-desc">Medical-grade laser for permanent hair reduction on all skin tones, with minimal discomfort and lasting results.</div>
+      <div class="tc-link" onclick="openModal()">Book this treatment →</div>
+    </div>
+    <div class="treatment-card reveal" style="--tc-before:url('assets/hydrafacial-before.jpg');--tc-img:url('assets/hydrafacial-after.jpg');">
+      <div class="tc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="currentColor"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01" stroke="currentColor"/></svg>
+      </div>
+      <div class="tc-name">HydraFacial</div>
+      <div class="tc-desc">Deep cleansing, exfoliation, and hydration in a single session. Visibly luminous skin from the very first treatment.</div>
+      <div class="tc-link" onclick="openModal()">Book this treatment →</div>
+    </div>
+    <div class="treatment-card reveal" style="--tc-before:url('assets/laser-before.jpg');--tc-img:url('assets/laser-after.jpg');">
+      <div class="tc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09zM12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z" stroke="currentColor"/></svg>
+      </div>
+      <div class="tc-name">Skin Rejuvenation</div>
+      <div class="tc-desc">IPL, RF, and laser protocols to address pigmentation, redness and texture — restoring skin clarity at a cellular level.</div>
+      <div class="tc-link" onclick="openModal()">Book this treatment →</div>
+    </div>
+    <div class="treatment-card reveal" style="--tc-before:url('assets/fillers-before.jpg');--tc-img:url('assets/fillers-after.jpg');">
+      <div class="tc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" stroke="currentColor"/></svg>
+      </div>
+      <div class="tc-name">Body Contouring</div>
+      <div class="tc-desc">Non-surgical fat reduction and skin tightening using CoolSculpting and RF technology. Zero downtime reshaping.</div>
+      <div class="tc-link" onclick="openModal()">Book this treatment →</div>
+    </div>
+    <div class="treatment-card reveal" style="--tc-before:url('assets/hydrafacial-before.jpg');--tc-img:url('assets/hydrafacial-after.jpg');">
+      <div class="tc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75"><path d="M12 2a10 10 0 110 20A10 10 0 0112 2zm0 6v4l3 3" stroke="currentColor"/></svg>
+      </div>
+      <div class="tc-name">Microneedling</div>
+      <div class="tc-desc">Collagen induction therapy to reduce scarring, fine lines, and pores. Enhanced with PRP for accelerated renewal.</div>
+      <div class="tc-link" onclick="openModal()">Book this treatment →</div>
+    </div>
+    <div class="treatment-card reveal" style="--tc-before:url('assets/botox-before.jpg');--tc-img:url('assets/fillers-after.jpg');border-style:dashed;border-color:rgba(77,159,195,0.34);background:rgba(77,159,195,0.05);">
+      <div class="tc-icon" style="background:rgba(77,159,195,0.12);">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke="var(--clay)"><path d="M12 5v14M5 12h14"/></svg>
+      </div>
+      <div class="tc-name" style="color:var(--clay);">Custom Protocol</div>
+      <div class="tc-desc">Not sure where to start? Our specialists design a fully personalized treatment plan during your free consultation.</div>
+      <div class="tc-link" onclick="openModal()" style="color:var(--clay);">Get your plan →</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── INTERACTIVE FEATURES ─── -->
+<section id="features" class="section-pad">
+  <div class="features-header reveal">
+    <p class="eyebrow">Why Houston MedSpa</p>
+    <h2 class="section-title">A practice built on <em>precision</em></h2>
+    <p class="section-sub">Three pillars that make this premium MedSpa template feel clinical, elegant, and conversion ready.</p>
+  </div>
+  <div class="features-grid">
+    <!-- Card 1: Diagnostic Shuffler -->
+    <div class="feature-card reveal">
+      <div class="fc-label">Personalized Analysis</div>
+      <div class="fc-title">Tailored to your anatomy</div>
+      <div class="fc-desc">No two faces are the same. Every plan is designed around your unique structure and aesthetic goals.</div>
+      <div class="fc-content">
+        <div class="shuffler-stack" id="shuffler">
+          <div class="shuffler-card">
+            <div class="sc-dot"></div>
+            <div><div class="sc-text">Deep tissue analysis</div><div class="sc-sub">Mapping facial structure</div></div>
+          </div>
+          <div class="shuffler-card">
+            <div class="sc-dot" style="background:var(--moss)"></div>
+            <div><div class="sc-text">Skin type profiling</div><div class="sc-sub">Tone, texture, elasticity</div></div>
+          </div>
+          <div class="shuffler-card">
+            <div class="sc-dot" style="background:#6B8F71"></div>
+            <div><div class="sc-text">Goal alignment</div><div class="sc-sub">Your vision, our expertise</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Card 2: Telemetry -->
+    <div class="feature-card reveal">
+      <div class="fc-label">Medical-Grade Technology</div>
+      <div class="fc-title">FDA-cleared, results-driven</div>
+      <div class="fc-desc">Every device we use meets the highest medical standards for safety and efficacy.</div>
+      <div class="fc-content">
+        <div class="telemetry-wrap">
+          <div class="tele-header">
+            <div class="tele-dot"></div>
+            <span class="tele-live">Live Treatment Log</span>
+          </div>
+          <div class="tele-line" id="tele-line-0">› FDA-cleared devices active</div>
+          <div class="tele-line" id="tele-line-1">› Skin sensor calibrated</div>
+          <div class="tele-line active" id="tele-active">› <span id="tele-text"></span><span class="tele-cursor"></span></div>
+        </div>
+      </div>
+    </div>
+    <!-- Card 3: Scheduler -->
+    <div class="feature-card reveal">
+      <div class="fc-label">Seamless Booking</div>
+      <div class="fc-title">Your schedule, our priority</div>
+      <div class="fc-desc">Flexible appointments, same-week availability, and a dedicated care coordinator for every client.</div>
+      <div class="fc-content">
+        <div class="scheduler-wrap">
+          <div class="sched-days" id="scheduler">
+            <div class="sched-day-label">S</div><div class="sched-day-label">M</div>
+            <div class="sched-day-label">T</div><div class="sched-day-label">W</div>
+            <div class="sched-day-label">T</div><div class="sched-day-label">F</div>
+            <div class="sched-day-label">S</div>
+            <div class="sched-day">8</div><div class="sched-day">9</div>
+            <div class="sched-day">10</div><div class="sched-day">11</div>
+            <div class="sched-day">12</div><div class="sched-day">13</div>
+            <div class="sched-day">14</div>
+          </div>
+          <div class="sched-save" id="sched-save">Save Appointment</div>
+          <div style="font-size:0.72rem;color:var(--muted);text-align:center;margin-top:0.25rem;font-family:var(--font-mono);">Available slots this week</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PHILOSOPHY ─── -->
+<section id="philosophy">
+  <div class="cta-band" style="background:var(--cream-2);padding:5rem 3rem;text-align:left;">
+    <div style="max-width:700px;margin:0 auto;">
+      <p class="reveal" style="font-size:0.85rem;color:var(--muted);line-height:1.8;margin-bottom:1.5rem;">Most medspas focus on: volume treatments, fast appointments, and maximizing throughput per day.</p>
+      <p class="reveal" style="font-family:var(--font-display);font-style:italic;font-size:clamp(2rem,4.5vw,3.8rem);font-weight:300;color:var(--charcoal);line-height:1.1;">We focus on: results that make you feel like <span style="color:var(--clay);">yourself again.</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROTOCOL ─── -->
+<section id="protocol" class="section-pad">
+  <div class="protocol-header reveal">
+    <p class="eyebrow" style="justify-content:center;">How It Works</p>
+    <h2 class="section-title">From <em>first visit</em> to radiant results</h2>
+  </div>
+  <div class="protocol-steps">
+    <div class="protocol-step reveal">
+      <div class="step-num">
+        <span class="step-num-big">01</span>
+        <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);letter-spacing:0.1em;display:block;margin-top:0.2rem;">STEP</span>
+      </div>
+      <div class="step-body">
+        <div class="step-title">Free Consultation</div>
+        <div class="step-desc">Meet your dedicated specialist. We review your medical history, skin profile, and goals — then map a personalized protocol. No obligation, no pressure.</div>
+      </div>
+      <div class="step-visual">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" stroke="currentColor"/></svg>
+      </div>
+    </div>
+    <div class="protocol-step reveal">
+      <div class="step-num">
+        <span class="step-num-big">02</span>
+        <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);letter-spacing:0.1em;display:block;margin-top:0.2rem;">STEP</span>
+      </div>
+      <div class="step-body">
+        <div class="step-title">Personalized Treatment</div>
+        <div class="step-desc">Board-certified specialists execute your protocol using FDA-cleared, medical-grade technology. Most treatments complete in under 60 minutes with zero downtime.</div>
+      </div>
+      <div class="step-visual">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" stroke="currentColor"/></svg>
+      </div>
+    </div>
+    <div class="protocol-step reveal">
+      <div class="step-num">
+        <span class="step-num-big">03</span>
+        <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);letter-spacing:0.1em;display:block;margin-top:0.2rem;">STEP</span>
+      </div>
+      <div class="step-body">
+        <div class="step-title">Ongoing Care & Results</div>
+        <div class="step-desc">Your care coordinator follows up at 7, 30, and 90 days. We track your results, refine as needed, and build a long-term skin health strategy around you.</div>
+      </div>
+      <div class="step-visual">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor"/></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA BAND 1 ─── -->
+<div class="cta-band reveal">
+  <p class="cta-title">Your transformation<br>starts with a <em>conversation</em></p>
+  <p class="cta-sub">A complimentary, no-pressure consultation with a licensed specialist. Come with questions — leave with clarity.</p>
+  <button class="btn-white" onclick="openModal()">
+    Book Free Consultation
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
+  </button>
+</div>
+
+<!-- ─── BEFORE & AFTER ─── -->
+<section id="beforeafter" class="section-pad">
+  <div class="ba-layout">
+    <div>
+      <p class="eyebrow reveal">Real Results</p>
+      <h2 class="section-title reveal">Before &amp; <em>After</em></h2>
+      <p class="section-sub reveal" style="margin-bottom:2rem;">Actual client outcomes. Results that speak louder than promises.</p>
+      <div class="ba-tabs reveal">
+        <button class="ba-tab active" data-treatment="Botox" onclick="switchBA(this,'Botox')">Botox</button>
+        <button class="ba-tab" data-treatment="Fillers" onclick="switchBA(this,'Fillers')">Fillers</button>
+        <button class="ba-tab" data-treatment="HydraFacial" onclick="switchBA(this,'HydraFacial')">HydraFacial</button>
+        <button class="ba-tab" data-treatment="Laser" onclick="switchBA(this,'Laser')">Laser</button>
+      </div>
+      <ul class="ba-result-list reveal" id="ba-results">
+        <li><strong>Natural-looking results</strong> tailored to facial structure</li>
+        <li>Treatment completed in <strong>under 45 minutes</strong></li>
+        <li><strong>Zero downtime</strong> — return to daily activities immediately</li>
+        <li>Results visible within <strong>5–7 days</strong></li>
+        <li>Lasts <strong>3–6 months</strong> with optimal technique</li>
+      </ul>
+      <button class="btn-primary" style="margin-top:2rem;" onclick="openModal()">Get Similar Results →</button>
+    </div>
+    <div class="reveal">
+      <div class="ba-slider-wrap" id="ba-slider">
+        <img class="ba-img"
+          src="assets/botox-before.jpg"
+          alt="Botox before treatment"
+          width="980"
+          height="1756"
+          loading="lazy"
+          decoding="async">
+        <img class="ba-img after"
+          src="assets/botox-after.jpg"
+          alt="Botox after treatment"
+          width="980"
+          height="1756"
+          loading="lazy"
+          decoding="async">
+        <div class="ba-divider" id="ba-divider"></div>
+        <div class="ba-handle" id="ba-handle">
+          <svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <span class="ba-label-pill ba-before-pill">Before</span>
+        <span class="ba-label-pill ba-after-pill">After</span>
+      </div>
+      <p style="font-size:0.7rem;color:var(--muted-lt);text-align:center;margin-top:0.75rem;font-family:var(--font-mono);">Drag to compare · Individual results may vary</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TESTIMONIALS ─── -->
+<section id="testimonials" class="section-pad" style="background:var(--cream-2);">
+  <div style="margin-bottom:3.5rem;" class="reveal">
+    <p class="eyebrow">Client Stories</p>
+    <h2 class="section-title">What our clients <em>say</em></h2>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <span class="testi-stars">★★★★★</span>
+      <p class="testi-text">"I've been to several medspas in Houston and nothing compares. The consultation was thorough, the treatment precise, and the results exactly what I wanted."</p>
+      <div class="testi-author"><div class="testi-avatar">SM</div><div><div class="testi-name">Sarah M.</div><div class="testi-treatment">Botox & Fillers</div></div></div>
+    </div>
+    <div class="testi-card reveal">
+      <span class="testi-stars">★★★★★</span>
+      <p class="testi-text">"After years of trying skincare products with no results, one HydraFacial session completely changed my skin. I couldn't believe how different I looked the next morning."</p>
+      <div class="testi-author"><div class="testi-avatar">JR</div><div><div class="testi-name">Jessica R.</div><div class="testi-treatment">HydraFacial</div></div></div>
+    </div>
+    <div class="testi-card reveal">
+      <span class="testi-stars">★★★★★</span>
+      <p class="testi-text">"The team made me feel completely at ease. My specialist was incredibly knowledgeable and walked me through every step. Already booked for my next session."</p>
+      <div class="testi-author"><div class="testi-avatar">KT</div><div><div class="testi-name">Karen T.</div><div class="testi-treatment">Laser Hair Removal</div></div></div>
+    </div>
+    <div class="testi-card reveal">
+      <span class="testi-stars">★★★★★</span>
+      <p class="testi-text">"Microneedling with PRP completely transformed my skin texture. The post-treatment care they provide is exceptional — truly a premium experience from start to finish."</p>
+      <div class="testi-author"><div class="testi-avatar">AL</div><div><div class="testi-name">Amanda L.</div><div class="testi-treatment">Microneedling + PRP</div></div></div>
+    </div>
+    <div class="testi-card reveal">
+      <span class="testi-stars">★★★★★</span>
+      <p class="testi-text">"Body contouring results exceeded my expectations. Changes visible after the second session. The clinic is immaculate, the team is world-class. Worth every penny."</p>
+      <div class="testi-author"><div class="testi-avatar">MH</div><div><div class="testi-name">Monica H.</div><div class="testi-treatment">Body Contouring</div></div></div>
+    </div>
+    <div class="testi-card reveal">
+      <span class="testi-stars">★★★★★</span>
+      <p class="testi-text">"I was nervous about fillers but my specialist walked me through every step. The result is so natural — my friends noticed I looked refreshed but couldn't figure out why."</p>
+      <div class="testi-author"><div class="testi-avatar">PT</div><div><div class="testi-name">Patricia T.</div><div class="testi-treatment">Dermal Fillers</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ─── -->
+<section id="faq" class="section-pad" style="background:var(--white);">
+  <div class="faq-layout">
+    <div class="reveal">
+      <p class="eyebrow">FAQ</p>
+      <h2 class="section-title">Everything you need to <em>know</em></h2>
+      <p class="section-sub" style="margin-top:1rem;">Can't find your answer? Call us or book a free consultation.</p>
+      <button class="btn-primary" style="margin-top:2rem;" onclick="openModal()">Book Consultation</button>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">How long do Botox results last? <span class="faq-toggle">+</span></div>
+        <div class="faq-a">Botox typically lasts 3 to 6 months depending on the treatment area, muscle activity, and individual metabolism. First-time clients often find results last closer to 3 months; with regular treatments, the duration tends to extend.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Is there recovery time after filler injections? <span class="faq-toggle">+</span></div>
+        <div class="faq-a">Most clients experience minimal redness or swelling that resolves within 24–48 hours. Bruising is possible but uncommon. We recommend avoiding strenuous exercise and alcohol for 24 hours post-treatment.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Are treatments safe for all skin types? <span class="faq-toggle">+</span></div>
+        <div class="faq-a">Yes. Our medical-grade protocols are designed and adjusted for all skin types and tones. During your consultation, your specialist conducts a full skin assessment to determine the safest and most effective approach for you.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">How much do treatments typically cost? <span class="faq-toggle">+</span></div>
+        <div class="faq-a">Pricing varies by treatment type and product amount. Botox starts from $12 per unit. Fillers begin at $650 per syringe. Your consultation is completely free, and we provide a clear, itemized estimate before any treatment begins.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">What happens during my free consultation? <span class="faq-toggle">+</span></div>
+        <div class="faq-a">Your consultation lasts approximately 30–45 minutes. A licensed specialist reviews your medical history, discusses your aesthetic goals, performs a facial assessment, and creates a personalized treatment plan — with full pricing and no obligation to proceed.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Will my results look natural? <span class="faq-toggle">+</span></div>
+        <div class="faq-a">Natural results are our standard, not our exception. Our specialists are trained in advanced injection techniques and facial anatomy to ensure enhancements complement your unique structure. The goal is always refreshed, never overdone.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FINAL CTA ─── -->
+<div class="cta-band reveal">
+  <p class="cta-title">Ready to invest in<br>your <em>confidence?</em></p>
+  <p class="cta-sub">Your complimentary consultation is the first step — no obligation, no pressure, just expert guidance tailored entirely to you.</p>
+  <button class="btn-white" onclick="openModal()">Book Free Consultation →</button>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand">Houston <em>MedSpa</em></div>
+      <p class="footer-desc">A premium MedSpa demo template for advanced non-surgical aesthetics, designed around clarity, trust, and high-intent conversion.</p>
+    </div>
+    <div>
+      <p class="footer-col-title">Treatments</p>
+      <ul class="footer-links">
+        <li><a href="#treatments">Botox & Dysport</a></li>
+        <li><a href="#treatments">Dermal Fillers</a></li>
+        <li><a href="#treatments">HydraFacial</a></li>
+        <li><a href="#treatments">Laser Hair Removal</a></li>
+        <li><a href="#treatments">Microneedling</a></li>
+        <li><a href="#treatments">Body Contouring</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-col-title">Clinic</p>
+      <ul class="footer-links">
+        <li><a href="#">About Us</a></li>
+        <li><a href="#testimonials">Client Stories</a></li>
+        <li><a href="#beforeafter">Before & After</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-col-title">Contact</p>
+      <ul class="footer-links">
+        <li><a href="tel:+17135550100">(713) 555-0100</a></li>
+        <li><a href="mailto:hello@houstonmedspa.demo">hello@houstonmedspa.demo</a></li>
+        <li><a href="#">Houston, TX<br>Demo template location</a></li>
+        <li style="margin-top:0.5rem;"><a href="#">Mon–Sat: 9am – 7pm</a></li>
+      </ul>
+      <div class="footer-social" aria-label="Social links">
+        <a href="#" aria-label="Instagram">Instagram</a>
+        <a href="#" aria-label="TikTok">TikTok</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2025 Houston MedSpa. Demo template. All rights reserved.</p>
+    <div class="footer-status">
+      <div class="status-dot"></div>
+      ALL SYSTEMS OPERATIONAL
+    </div>
+    <p class="footer-copy">Privacy Policy · Terms of Service</p>
+  </div>
+</footer>
+
+<!-- ─── STICKY BAR ─── -->
+<div id="sticky-bar">
+  <p class="sticky-text"><strong>Your free consultation is waiting.</strong> No commitment required.</p>
+  <button class="btn-primary" onclick="openModal()">Book Now — It's Free →</button>
+</div>
+
+<!-- ─── WHATSAPP ─── -->
+<a id="wa-btn" href="#" onclick="openWhatsApp(''); return false;" aria-label="WhatsApp">
+  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 3C9.373 3 4 8.373 4 15c0 2.385.832 4.584 2.219 6.336L4.5 28l6.832-1.697A12.93 12.93 0 0016 27c6.627 0 12-5.373 12-12S22.627 3 16 3zm0 22a10.93 10.93 0 01-5.582-1.527l-.4-.237-4.054 1.006.997-4.011-.26-.411A10.947 10.947 0 015 15c0-6.065 4.935-11 11-11s11 4.935 11 11-4.935 11-11 11zm6.062-8.254l-1.578-.452a.49.49 0 00-.479.122l-.722.741a.48.48 0 01-.524.107c-.648-.265-2.848-1.448-3.797-3.668a.48.48 0 01.084-.529l.675-.756a.49.49 0 00.085-.494l-.667-1.573a.49.49 0 00-.529-.29c-.487.064-1.87.491-2.297 2.166-.558 2.189 1.045 4.584 3.45 6.449 2.405 1.864 5.058 2.47 6.803 1.657 1.218-.567 1.456-2.137 1.396-2.667a.49.49 0 00-.9-.813z"/>
+  </svg>
+</a>
+
+<!-- ─── CONSULTATION MODAL ─── -->
+<div id="modal-overlay" role="dialog" aria-modal="true" onclick="if(event.target===this)closeModal()">
+  <div id="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+
+    <!-- Step indicator -->
+    <div class="modal-steps-bar">
+      <div class="modal-step-ind active" id="step-ind-0"></div>
+      <div class="modal-step-ind" id="step-ind-1"></div>
+      <div class="modal-step-ind" id="step-ind-2"></div>
+    </div>
+    <div class="modal-step-label">
+      <span class="msl-item active" id="step-lbl-0">Service</span>
+      <span class="msl-item" id="step-lbl-1">Details</span>
+      <span class="msl-item" id="step-lbl-2">Contact</span>
+    </div>
+
+    <div class="modal-body">
+      <!-- Step 0: Service -->
+      <div id="modal-step-0">
+        <h2 class="modal-title">What are we <em>treating?</em></h2>
+        <p class="modal-sub">Choose the service you're most interested in. We'll tailor your consultation around it.</p>
+        <div class="service-grid" id="service-grid">
+          <div class="service-option" onclick="selectService(this,'Botox & Dysport')"><div class="service-icon">💉</div><div><div class="service-name">Botox & Dysport</div><div class="service-sub">Wrinkle relaxers</div></div></div>
+          <div class="service-option" onclick="selectService(this,'Dermal Fillers')"><div class="service-icon">✨</div><div><div class="service-name">Dermal Fillers</div><div class="service-sub">Volume & contour</div></div></div>
+          <div class="service-option" onclick="selectService(this,'Laser Hair Removal')"><div class="service-icon">⚡</div><div><div class="service-name">Laser Hair Removal</div><div class="service-sub">Permanent reduction</div></div></div>
+          <div class="service-option" onclick="selectService(this,'HydraFacial')"><div class="service-icon">💧</div><div><div class="service-name">HydraFacial</div><div class="service-sub">Glow & hydration</div></div></div>
+          <div class="service-option" onclick="selectService(this,'Skin Rejuvenation')"><div class="service-icon">🌟</div><div><div class="service-name">Skin Rejuvenation</div><div class="service-sub">IPL & RF protocols</div></div></div>
+          <div class="service-option" onclick="selectService(this,'Microneedling')"><div class="service-icon">🔬</div><div><div class="service-name">Microneedling + PRP</div><div class="service-sub">Collagen induction</div></div></div>
+          <div class="service-option" onclick="selectService(this,'Body Contouring')"><div class="service-icon">🏃</div><div><div class="service-name">Body Contouring</div><div class="service-sub">Non-surgical shaping</div></div></div>
+          <div class="service-option" onclick="selectService(this,'Not sure — need guidance')"><div class="service-icon">🧠</div><div><div class="service-name">Not sure yet</div><div class="service-sub">I need expert guidance</div></div></div>
+        </div>
+        <button class="btn-modal-next" onclick="goToStep(1)">Continue →</button>
+      </div>
+
+      <!-- Step 1: Date/Time -->
+      <div id="modal-step-1" style="display:none;">
+        <h2 class="modal-title">Pick a <em>time</em></h2>
+        <p class="modal-sub">Choose your preferred appointment date and time. We confirm within 2 hours.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="f-date">Preferred Date</label>
+            <input class="form-input" type="date" id="f-date" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="f-time">Preferred Time</label>
+            <select class="form-select" id="f-time">
+              <option value="" disabled selected>Select time</option>
+              <option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option>
+              <option>12:00 PM</option><option>1:00 PM</option><option>2:00 PM</option>
+              <option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-modal-next" onclick="goToStep(2)">Continue →</button>
+      </div>
+
+      <!-- Step 2: Contact -->
+      <div id="modal-step-2" style="display:none;">
+        <h2 class="modal-title">Almost <em>done!</em></h2>
+        <p class="modal-sub">Enter your details and we'll confirm your appointment right away.</p>
+        <form id="consult-form" onsubmit="handleSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="f-name">Full Name</label>
+              <input class="form-input" type="text" id="f-name" placeholder="Jane Smith" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-age">Age</label>
+              <input class="form-input" type="number" id="f-age" placeholder="28" min="18" max="99" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="f-email">Email Address</label>
+              <input class="form-input" type="email" id="f-email" placeholder="jane@email.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-phone">Phone Number</label>
+              <div class="phone-field">
+                <select class="form-select phone-country" id="f-country" aria-label="Country code">
+                  <option value="br">Brazil (+55)</option>
+                  <option value="us" selected>USA (+1)</option>
+                  <option value="es">Spain (+34)</option>
+                  <option value="uk">UK (+44)</option>
+                </select>
+                <input class="form-input" type="tel" id="f-phone" placeholder="(713) 555-0100" inputmode="numeric" autocomplete="tel-national" maxlength="16" aria-describedby="phone-error" required>
+              </div>
+              <p class="form-error" id="phone-error" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label" for="f-notes">Notes (optional)</label>
+            <textarea class="form-textarea" id="f-notes" placeholder="Any skin concerns, medical history notes, or questions..."></textarea>
+          </div>
+          <button type="submit" class="form-submit">Reserve My Free Consultation</button>
+          <p class="form-note">By submitting, you agree to receive appointment confirmations via email and WhatsApp.</p>
+        </form>
+      </div>
+    </div>
+
+    <!-- Success -->
+    <div id="form-success" class="modal-body" style="display:none;text-align:center;padding:3rem 2.5rem;">
+      <span class="success-icon">✦</span>
+      <h3>Thank you, <em id="success-name">beautiful</em>.</h3>
+      <p style="margin-top:0.75rem;">Your consultation request is confirmed. We'll reach out within 2 hours to finalize your appointment. You'll also receive a WhatsApp message shortly with your booking details.</p>
+      <button class="btn-primary" style="margin-top:2rem;" onclick="closeModal()">Back to Houston MedSpa →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (window.gsap && window.ScrollTrigger && !reduceMotion) {
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ── HERO ANIMATIONS ── */
+  window.addEventListener('load', () => {
+    const tl = gsap.timeline({ delay: 0.15 });
+    tl.to('.hero-pill',      { opacity:1, y:0, duration:0.7, ease:'power3.out' })
+      .to('.hero-headline',  { opacity:1, y:0, duration:0.9, ease:'power3.out' }, '-=0.4')
+      .to('.hero-sub',       { opacity:1, y:0, duration:0.7, ease:'power3.out' }, '-=0.5')
+      .to('.hero-ctas',      { opacity:1, y:0, duration:0.6, ease:'power3.out' }, '-=0.4')
+      .to('.hero-stats',     { opacity:1, y:0, duration:0.6, ease:'power3.out' }, '-=0.3')
+      .to('.hero-carousel',  { opacity:1, y:0, duration:0.9, ease:'power3.out' }, '-=0.7')
+      .to('.hero-floating-card', { opacity:1, stagger:0.15, duration:0.6, ease:'power3.out' }, '-=0.4');
+  });
+
+  /* ── SCROLL REVEALS ── */
+  document.querySelectorAll('.reveal').forEach(el => {
+    gsap.fromTo(el, { opacity:0, y:30 }, {
+      scrollTrigger: { trigger: el, start:'top 88%', toggleActions:'play none none none' },
+      opacity:1, y:0, duration:0.85, ease:'power3.out'
+    });
+  });
+  } else {
+    document.querySelectorAll('.hero-pill, .hero-headline, .hero-sub, .hero-ctas, .hero-stats, .hero-carousel, .hero-floating-card, .reveal').forEach(el => {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    });
+  }
+
+  /* ── NAVBAR SCROLL ── */
+  const navbar = document.getElementById('navbar');
+  const stickyBar = document.getElementById('sticky-bar');
+  let scrollTicking = false;
+  window.addEventListener('scroll', () => {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(() => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+      stickyBar.classList.toggle('visible', window.scrollY > 600);
+      scrollTicking = false;
+    });
+  }, { passive: true });
+
+  /* ── MODAL STATE ── */
+  let currentStep = 0;
+  let selectedService = '';
+
+  function openModal() {
+    document.getElementById('modal-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  function selectService(el, name) {
+    document.querySelectorAll('.service-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedService = name;
+  }
+
+  function goToStep(n) {
+    document.getElementById(`modal-step-${currentStep}`).style.display = 'none';
+    document.getElementById(`step-ind-${currentStep}`).classList.remove('active');
+    document.getElementById(`step-lbl-${currentStep}`).classList.remove('active');
+    currentStep = n;
+    document.getElementById(`modal-step-${currentStep}`).style.display = 'block';
+    document.getElementById(`step-ind-${currentStep}`).classList.add('active');
+    document.getElementById(`step-lbl-${currentStep}`).classList.add('active');
+    // also mark previous steps done
+    for(let i=0;i<currentStep;i++) {
+      document.getElementById(`step-ind-${i}`).style.background = 'var(--moss)';
+    }
+  }
+
+  /* ── FORM SUBMIT ── */
+  const phoneRules = {
+    br: { label: 'Brazil', dial: '+55', min: 10, max: 11, placeholder: '11 91234 5678', pattern: /^[1-9]{2}9?\d{8}$/ },
+    us: { label: 'USA', dial: '+1', min: 10, max: 10, placeholder: '(713) 555-0100', pattern: /^[2-9]\d{2}[2-9]\d{6}$/ },
+    es: { label: 'Spain', dial: '+34', min: 9, max: 9, placeholder: '612 345 678', pattern: /^[6-9]\d{8}$/ },
+    uk: { label: 'UK', dial: '+44', min: 10, max: 11, placeholder: '07123 456789', pattern: /^0?[1-9]\d{9,10}$/ }
+  };
+  const countryInput = document.getElementById('f-country');
+  const phoneInput = document.getElementById('f-phone');
+  const phoneError = document.getElementById('phone-error');
+
+  function digitsOnly(value) {
+    return String(value || '').replace(/\D/g, '');
+  }
+
+  function activePhoneRule() {
+    return phoneRules[countryInput?.value] || phoneRules.us;
+  }
+
+  function formatNationalPhone(country, digits) {
+    if (country === 'us') {
+      if (digits.length <= 3) return digits;
+      if (digits.length <= 6) return `(${digits.slice(0,3)}) ${digits.slice(3)}`;
+      return `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6,10)}`;
+    }
+    if (country === 'br') {
+      if (digits.length <= 2) return digits;
+      const area = digits.slice(0, 2);
+      const rest = digits.slice(2);
+      if (rest.length <= 4) return `${area} ${rest}`;
+      if (rest.length <= 8) return `${area} ${rest.slice(0,4)}-${rest.slice(4)}`;
+      return `${area} ${rest.slice(0,5)}-${rest.slice(5,9)}`;
+    }
+    if (country === 'es') {
+      return [digits.slice(0,3), digits.slice(3,6), digits.slice(6,9)].filter(Boolean).join(' ');
+    }
+    return [digits.slice(0,5), digits.slice(5,8), digits.slice(8,11)].filter(Boolean).join(' ');
+  }
+
+  function canonicalPhoneDigits(country, digits) {
+    return country === 'uk' && digits.startsWith('0') ? digits.slice(1) : digits;
+  }
+
+  function updatePhoneInput() {
+    if (!countryInput || !phoneInput) return;
+    const country = countryInput.value;
+    const rule = activePhoneRule();
+    const digits = digitsOnly(phoneInput.value).slice(0, rule.max);
+    phoneInput.placeholder = rule.placeholder;
+    phoneInput.maxLength = country === 'us' ? 14 : 18;
+    phoneInput.value = formatNationalPhone(country, digits);
+  }
+
+  function setPhoneError(message) {
+    if (!phoneInput || !phoneError) return;
+    phoneInput.classList.toggle('is-invalid', Boolean(message));
+    phoneError.textContent = message || '';
+  }
+
+  function validatePhone() {
+    if (!countryInput || !phoneInput) return true;
+    const country = countryInput.value;
+    const rule = activePhoneRule();
+    const digits = digitsOnly(phoneInput.value);
+
+    if (!digits) {
+      setPhoneError(`Enter a ${rule.label} phone number.`);
+      return false;
+    }
+    if (digits.length < rule.min || digits.length > rule.max) {
+      const lengthText = rule.min === rule.max ? `${rule.max} digits` : `${rule.min}-${rule.max} digits`;
+      setPhoneError(`${rule.label} numbers should use ${lengthText}.`);
+      return false;
+    }
+    if (!rule.pattern.test(digits)) {
+      setPhoneError(`Enter a valid ${rule.label} phone number.`);
+      return false;
+    }
+
+    setPhoneError('');
+    return true;
+  }
+
+  function formattedPhoneForMessage() {
+    const country = countryInput?.value || 'us';
+    const rule = activePhoneRule();
+    const digits = canonicalPhoneDigits(country, digitsOnly(phoneInput?.value));
+    return `${rule.dial} ${formatNationalPhone(country, digits)}`;
+  }
+
+  if (countryInput && phoneInput) {
+    countryInput.addEventListener('change', () => {
+      updatePhoneInput();
+      setPhoneError('');
+      phoneInput.focus();
+    });
+    phoneInput.addEventListener('input', () => {
+      updatePhoneInput();
+      if (phoneError?.textContent) validatePhone();
+    });
+    phoneInput.addEventListener('blur', validatePhone);
+    updatePhoneInput();
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!validatePhone()) return;
+
+    const name  = document.getElementById('f-name').value.trim();
+    const email = document.getElementById('f-email').value.trim();
+    const date  = document.getElementById('f-date').value;
+    const time  = document.getElementById('f-time').value || 'Flexible';
+    const notes = document.getElementById('f-notes').value.trim();
+    const service = selectedService || 'General Consultation';
+    const preferredDate = date
+      ? new Date(`${date}T00:00:00`).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })
+      : 'Flexible';
+
+    document.getElementById('modal-step-2').style.display = 'none';
+    document.getElementById('form-success').style.display = 'block';
+    document.getElementById('success-name').textContent = name.split(/\s+/)[0] || 'beautiful';
+
+    const message = [
+      `Hi! My name is ${name}.`,
+      `I'd like to book a FREE consultation for: *${service}*`,
+      `Preferred: ${preferredDate} at ${time}`,
+      `Phone: ${formattedPhoneForMessage()}`,
+      `Email: ${email}`,
+      notes ? `Notes: ${notes}` : ''
+    ].filter(Boolean).join('\n');
+
+    /* WhatsApp redirect after 2s */
+    setTimeout(() => {
+      openWhatsApp(message);
+    }, 2000);
+  }
+
+  function openWhatsApp(msg) {
+    const phone = '17135550100'; // Replace with real business WhatsApp number.
+    const text = msg || "Hi! I found Houston MedSpa and would like to book a free consultation.";
+    window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(text), '_blank');
+  }
+
+  /* ── FAQ ── */
+  function toggleFaq(el) {
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) el.classList.add('open');
+  }
+
+  /* ── BEFORE/AFTER SLIDER ── */
+  const baImagePairs = {
+    Botox: {
+      before: 'assets/botox-before.jpg',
+      after: 'assets/botox-after.jpg',
+      beforeAlt: 'Botox before treatment',
+      afterAlt: 'Botox after treatment'
+    },
+    Fillers: {
+      before: 'assets/fillers-before.jpg',
+      after: 'assets/fillers-after.jpg',
+      beforeAlt: 'Fillers before treatment',
+      afterAlt: 'Fillers after treatment'
+    },
+    HydraFacial: {
+      before: 'assets/hydrafacial-before.jpg',
+      after: 'assets/hydrafacial-after.jpg',
+      beforeAlt: 'HydraFacial before treatment',
+      afterAlt: 'HydraFacial after treatment'
+    },
+    Laser: {
+      before: 'assets/laser-before.jpg',
+      after: 'assets/laser-after.jpg',
+      beforeAlt: 'Laser before treatment',
+      afterAlt: 'Laser after treatment'
+    }
+  };
+
+  const beforeAfterSlider = (() => {
+    const root = document.getElementById('ba-slider');
+    if (!root) return null;
+
+    const before = root.querySelector('.ba-img:not(.after)');
+    const after = root.querySelector('.ba-img.after');
+    const dividerEl = document.getElementById('ba-divider');
+    const handleEl = document.getElementById('ba-handle');
+    const state = { treatment: 'Botox', pct: 50, dragging: false };
+
+    function setPosition(pct) {
+      state.pct = Math.max(5, Math.min(95, pct));
+      if (dividerEl) dividerEl.style.left = state.pct + '%';
+      if (handleEl) handleEl.style.left = state.pct + '%';
+      if (after) after.style.clipPath = `inset(0 ${100 - state.pct}% 0 0)`;
+    }
+
+    function pctFromClientX(clientX) {
+      const rect = root.getBoundingClientRect();
+      return ((clientX - rect.left) / rect.width) * 100;
+    }
+
+    function setTreatment(treatment) {
+      const pair = baImagePairs[treatment];
+      if (!pair || !before || !after) return;
+      state.treatment = treatment;
+      root.classList.add('is-easing');
+      before.src = pair.before;
+      before.alt = pair.beforeAlt;
+      after.src = pair.after;
+      after.alt = pair.afterAlt;
+      setPosition(50);
+      setTimeout(() => root.classList.remove('is-easing'), 320);
+    }
+
+    function startDrag(e) {
+      state.dragging = true;
+      root.classList.remove('is-easing');
+      if (e.pointerId !== undefined && root.setPointerCapture) root.setPointerCapture(e.pointerId);
+      setPosition(pctFromClientX(e.clientX));
+      e.preventDefault();
+    }
+
+    function moveDrag(e) {
+      if (!state.dragging) return;
+      setPosition(pctFromClientX(e.clientX));
+      e.preventDefault();
+    }
+
+    function endDrag(e) {
+      if (!state.dragging) return;
+      state.dragging = false;
+      root.classList.add('is-easing');
+      if (e?.pointerId !== undefined && root.releasePointerCapture) {
+        try { root.releasePointerCapture(e.pointerId); } catch (_) {}
+      }
+      setTimeout(() => root.classList.remove('is-easing'), 320);
+    }
+
+    root.addEventListener('pointerdown', startDrag);
+    root.addEventListener('pointermove', moveDrag);
+    root.addEventListener('pointerup', endDrag);
+    root.addEventListener('pointercancel', endDrag);
+
+    setTreatment('Botox');
+    return { setTreatment };
+  })();
+
+  /* ── BEFORE/AFTER TABS ── */
+  const baResults = {
+    'Botox':      ['<strong>Natural-looking results</strong> tailored to facial structure','Treatment completed in <strong>under 45 minutes</strong>','<strong>Zero downtime</strong> — return to activities immediately','Results visible within <strong>5–7 days</strong>','Lasts <strong>3–6 months</strong> with optimal technique'],
+    'Fillers':    ['Volume restoration for <strong>lips, cheeks, and jawline</strong>','Hyaluronic acid for a <strong>natural, soft result</strong>','Minimal swelling resolves within <strong>48 hours</strong>','<strong>Immediate</strong> visible improvement','Results last <strong>9–18 months</strong> depending on area'],
+    'HydraFacial':['Deep cleanse, exfoliation, and <strong>hydration</strong> in one session','<strong>Visibly glowing skin</strong> from the first treatment','<strong>Zero downtime</strong> — perfect for lunch-hour appointments','Suitable for <strong>all skin types and tones</strong>','Results improve with <strong>regular monthly sessions</strong>'],
+    'Laser':      ['Permanent hair reduction after <strong>6–8 sessions</strong>','Safe for <strong>all skin tones</strong> with our advanced lasers','Treatments take <strong>15–60 minutes</strong> depending on area','Minimal discomfort with <strong>cooling technology</strong>','<strong>Smooth, hair-free skin</strong> in treated areas']
+  };
+
+  function switchBA(btn, treatment) {
+    if (!baImagePairs[treatment]) return;
+    document.querySelectorAll('.ba-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    beforeAfterSlider?.setTreatment(treatment);
+    const list = document.getElementById('ba-results');
+    list.innerHTML = (baResults[treatment]||[]).map(r => `<li>${r}</li>`).join('');
+  }
+
+  /* ── SET MIN DATE ── */
+  const dateInput = document.getElementById('f-date');
+  if (dateInput) dateInput.min = new Date().toISOString().split('T')[0];
+
+  /* ── SHUFFLER CARD ANIMATION ── */
+  const shufflerCards = document.querySelectorAll('.shuffler-card');
+  if (shufflerCards.length) {
+    setInterval(() => {
+      const arr = [...shufflerCards];
+      const last = arr.pop();
+      arr.unshift(last);
+      arr.forEach((card, i) => {
+        card.style.top = (i * 10) + 'px';
+        card.style.zIndex = 3 - i;
+        card.style.opacity = i === 0 ? '1' : i === 1 ? '0.7' : '0.4';
+      });
+    }, 3000);
+  }
+
+  /* ── TELEMETRY TYPEWRITER ── */
+  const teleMessages = [
+    'Collagen stimulation protocol active...',
+    'RF energy calibrated to 42°C...',
+    'Hyaluronic acid depth: 3.2mm...',
+    'Treatment zone: periorbital...',
+    'Post-session serum applied...',
+  ];
+  let teleIdx = 0, teleCharIdx = 0;
+  const teleEl = document.getElementById('tele-text');
+
+  function typeTele() {
+    if (!teleEl) return;
+    const msg = teleMessages[teleIdx];
+    if (teleCharIdx < msg.length) {
+      teleEl.textContent = msg.slice(0, ++teleCharIdx);
+      setTimeout(typeTele, 42);
+    } else {
+      setTimeout(() => {
+        teleIdx = (teleIdx + 1) % teleMessages.length;
+        teleCharIdx = 0;
+        teleEl.textContent = '';
+        typeTele();
+      }, 2200);
+    }
+  }
+  typeTele();
+
+  /* ── SCHEDULER ANIMATION ── */
+  const schedDays = document.querySelectorAll('.sched-day');
+  const schedSave = document.getElementById('sched-save');
+  const daySeq = [1, 3, 5]; // Mon, Wed, Fri indices
+  let schedStep = 0;
+
+  function runSched() {
+    if (!schedDays.length) return;
+    schedDays.forEach(d => d.classList.remove('active','hover-state','press-state'));
+    if (schedSave) schedSave.classList.remove('highlighted');
+
+    const dayIdx = daySeq[schedStep % daySeq.length];
+    const day = schedDays[dayIdx];
+    if (!day) return;
+
+    setTimeout(() => {
+      day.classList.add('hover-state');
+      setTimeout(() => {
+        day.classList.add('press-state');
+        setTimeout(() => {
+          day.classList.remove('press-state');
+          day.classList.remove('hover-state');
+          day.classList.add('active');
+          setTimeout(() => {
+            if (schedSave) schedSave.classList.add('highlighted');
+            setTimeout(() => {
+              schedStep++;
+              runSched();
+            }, 1500);
+          }, 400);
+        }, 200);
+      }, 500);
+    }, 600);
+  }
+  setTimeout(runSched, 1000);
+</script>
+</body>
+</html>
